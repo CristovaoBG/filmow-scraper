@@ -5,13 +5,19 @@ import threading
 import time
 import timeit
 
+urlBase = "https://filmow.com/usuarios/?pagina="
+pagesRead = 0
+
 def openSoup(httpLink):
 	htmlText = urllib.request.urlopen(httpLink).read()
 	soup = BeautifulSoup(htmlText, 'html.parser')
 	return soup
 
 def readUserPages(pageStart,pageEnd, userList):
+	global urlBase
+	global pagesRead
 	for i in range(pageStart,pageEnd):
+		#print("lendo pagina",str(i))
 		global pagesRead
 		url = urlBase + str(i)
 		try:
@@ -38,30 +44,33 @@ def checkIfOver(threadList,usersList):
 			f.write(u+'\n')
 	print("lista de usuarios salva com sucesso.")
 
-def readUserNames(threadAmount,pagesToRead):
-	global globalDoneReadingUserNames
+#def readUserNames(threadAmount,pagesToRead):
+threadAmount = 200
+pagesToRead = 70000
+print("lendo lista de usuarios, aguarde...")
+userList = []
+global globalDoneReadingUserNames
 #	threadAmount = 100
 #	pagesToRead = 200#70000
-	# go through the pages with users in it
-	urlBase = "https://filmow.com/usuarios/?pagina="
-	usersList = []
+# go through the pages with users in it
+usersList = []
 
-	chopNumber = int(pagesToRead/threadAmount)
+chopNumber = int(pagesToRead/threadAmount)
 
-	pageStart = 1
-	pageEnd = chopNumber
-	pagesRead = 0
-	threadList = []
-	while(pageStart < pagesToRead):
-		#print("from "+str(pageStart)+" to "+str(pageEnd))
-		newThread = threading.Thread(target = readUserPages, args = (pageStart,pageEnd,usersList))
-		newThread.start()
-		threadList.append(newThread)
-		pageStart+=chopNumber
-		pageEnd+=chopNumber
-	#thread that checks if other threads are done
-	threadThreadChecker = threading.Thread(target = checkIfOver, args = (threadList,usersList))
-	threadThreadChecker.start()
+pageStart = 1
+pageEnd = chopNumber
+pagesRead = 0
+threadList = []
+while(pageStart < pagesToRead):
+	#print("from "+str(pageStart)+" to "+str(pageEnd))
+	newThread = threading.Thread(target = readUserPages, args = (pageStart,pageEnd,usersList))
+	newThread.start()
+	threadList.append(newThread)
+	pageStart+=chopNumber
+	pageEnd+=chopNumber
+#thread that checks if other threads are done
+threadThreadChecker = threading.Thread(target = checkIfOver, args = (threadList,usersList))
+threadThreadChecker.start()
 
 #readUserNames(100,2000)
 
