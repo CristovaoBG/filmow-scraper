@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import threading
 import time
 import timeit
+import pickle
 
 urlBase = "https://filmow.com/usuarios/?pagina="
 pagesRead = 0
@@ -39,9 +40,11 @@ def checkIfOver(threadList,usersList):
 				time.sleep(1)
 				break
 	print("salvando lista de usuarios...")
-	with open("users.txt",'w') as f:
-		for u in usersList:
-			f.write(u+'\n')
+#	with open("users.txt",'w') as f:
+#		for u in usersList:
+#			f.write(u+'\n')
+	with open("users.txt","wb") as d:
+		pickle.dump(usersList,f)
 	print("lista de usuarios salva com sucesso.")
 
 #def readUserNames(threadAmount,pagesToRead):

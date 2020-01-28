@@ -4,17 +4,29 @@ from bs4 import BeautifulSoup
 import threading
 import time
 import timeit
+import pickle
 
 def openSoup(httpLink):
 	htmlText = urllib.request.urlopen(httpLink).read()
 	soup = BeautifulSoup(htmlText, 'html.parser')
 	return soup
-
+"""
 def readListFile(fileName):
 	f = open(fileName,"r")
 	string = f.read();
 	listReturn = string.split('\n',-1)
 	return listReturn
+"""
+
+def readListFile(fileName):
+	with open(fileName,"rb") as fp:
+		listReturn = pickle.load(fp)
+	return listReturn
+
+def saveListFile(listInput, fileName):
+	with open(fileName,"wb") as fp:
+		pickle.dump(listInput,fp)
+	return listReturn   
 
 def getFavourites(userString):
 	movieNameList = []
@@ -86,7 +98,7 @@ def getAllUsersFavourites(userList,usersFavouritesList):
 		usersFavouritesList.append(userAndFavourites)
 		print("DONE user "+ u +"   user number: "+str(i))
 		i+=1
-	
+
 
 
 
@@ -104,14 +116,12 @@ userDontWantToSee = getUserDontWantToSee(user)
 userFavouritesLength = len(userFavourites)
 	#abre lista de usuários
 
-
-
 threadAmount = 200
 
 userList = readListFile("users.txt")
 #limit = 1000
-firstUserIdToRead = 100200
-lastUserIdToRead = 100400
+firstUserIdToRead = 200400
+lastUserIdToRead = 300400
 
 
 
