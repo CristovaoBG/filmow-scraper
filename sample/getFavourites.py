@@ -13,7 +13,7 @@ def stop():
 
 def getFavourites(userString):
 	movieNameList = []
-	urlUser = "https://filmow.com"+userString
+	urlUser = "https://filmow.com"+"/usuario/" + userString + "/"
 	pageID = 1
 	while(True):
 		try:
@@ -23,7 +23,7 @@ def getFavourites(userString):
 		allMovies = userFavouritesSoup.find_all("li",class_="movie_list_item")
 		#print("reading: "+ urlUser+"filmes/favoritos/?pagina="+str(pageID))
 		for movie in allMovies:
-			movieName = movie.find("a")['href']
+			movieName = movie.find("a")['href'][1:-1] #[1:-1] pra eliminar os "/"
 			movieNameList.append(movieName)
 		pageID+=1
 	return movieNameList
@@ -78,9 +78,11 @@ def getAllUsersFavouritesThread(userList,usersFavouritesList):
 		#print("reading user "+ u +"   user number: "+str(i))
 		currentUserFavourite = getFavourites(u)
 		userAndFavourites = []
-		userAndFavourites.append(u)
-		userAndFavourites.append(currentUserFavourite)
-		usersFavouritesList.append(userAndFavourites)
+		# userAndFavourites.append(u)
+		# userAndFavourites.append(currentUserFavourite)
+		# usersFavouritesList.append(userAndFavourites)
+		if(len(currentUserFavourite)>0):
+			usersFavouritesList.append([u,currentUserFavourite])
 		#print("DONE user "+ u +"   user number: "+str(i))
 		userCount+=1
 		i+=1
@@ -100,7 +102,7 @@ for u in usersFavouritesList
 	usersRead.append(u[0])
 """
 
-def getAllUsersFavourites(user,userList, threadAmount=200, outputFile = "usersFavourites",NumberOfUsersToRead=1000):
+def getAllUsersFavourites(userList, threadAmount=200, outputFile = "usersFavourites",NumberOfUsersToRead=1000):
 	global stopAllThreads
 	global userCount
 	startTime = timeit.default_timer()

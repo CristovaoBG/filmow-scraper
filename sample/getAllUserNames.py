@@ -29,7 +29,8 @@ def readUserPages(pageStart,pageEnd, userList, verbose = False):
 			continue
 		peopleList = soup.find_all("li",class_="people-list-item")
 		for person in peopleList:
-			userList.append(person.find("a")['href'])
+			#ignora /usuario/ e / do inicio e do final, respectivamente
+			userList.append(person.find("a")['href'][9:-1])
 		pagesRead += 1
 
 def checkIfOver(threadList,usersList,fileName, verbose = True):
@@ -40,7 +41,8 @@ def checkIfOver(threadList,usersList,fileName, verbose = True):
 		for t in threadList:
 			if (t.isAlive()):
 				allDone = False
-				time.sleep(5)
+				time.sleep(10)
+				saveListFile(usersList,fileName)
 				print(floor(len(usersList)/30), "paginas lidas.")
 				break
 	print("total de paginas lidas:",floor(len(usersList)/30))
