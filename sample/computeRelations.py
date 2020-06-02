@@ -25,7 +25,6 @@ def countFavouritedTimes(usersAndFavouritesFileName):
         #import pdb; pdb.set_trace()
         onUser[0]+=1
         for fav in uaf[1]:
-
             #verifica se o filme fav ja esta na lista moviesAndNumbers, se tiver pega o id, se nao insere.
             try:
                 favId = [man[0] for man in moviesAndNumbers].index(fav)
@@ -40,56 +39,20 @@ def countFavouritedTimes(usersAndFavouritesFileName):
     saveListFile(moviesAndNumbers,"moviesAndNumbers.bin")
     return moviesAndNumbers;
 
-# porcentage = 0
-# stopShowing= False
-#
-# import threading
-# def printPorcentage():
-#     global stopShowing
-#     global porcentage
-#     if (not stopShowing):
-#         threading.Timer(5.0, printPorcentage).start()
-#         print(porcentage)
-#
-#
-# def normalizeMovieRelations(movieRelationsFile):
-#     global porcentage
-#     global stopShowing
-#     movieRelations = readListFile(movieRelationsFile)
-#     moviesAndNumbers = readListFile("moviesAndNumbers.bin")
-#     movieRelations = movieRelations[0:30000]
-#     total = len(movieRelations)
-#     print("total:", total)
-#     newMovieRelations = []
-#     printPorcentage()
-#     for movie in movieRelations:
-#         #busca valor do filme (movie[0]) na lista moviesAndNumbers
-#         movieId = [man[0] for man in moviesAndNumbers].index(movie[0])
-#         factor = moviesAndNumbers[movieId][1] #fator para calcular valor normalizado
-#         newOtherMovieList = []
-#         porcentage = len(newMovieRelations)
-#         for otherMovie in movie[1]:
-#             newValue = int(1000*otherMovie[1]/factor)
-#             newOtherMovieList.append([otherMovie[0], newValue])
-#         newMovieRelations.append([movie[0],newOtherMovieList])
-#         #gc.collect()
-#     saveListFile(newMovieRelations,"newMovieRelations.bin")
-#     stopShowing = True
-#     print("Done normalizing")
-
-def saveOnIntervall(listToSave,filename):
+def saveOnIntervall(listToSave,filename,total):
     while(True):
         time.sleep(200)
         saveListFile(listToSave,filename)
-        print("Arquivo",filename,"salvo. Tamanho:",len(listToSave))
+        print("Arquivo",filename,"salvo. Lidos:",len(listToSave,"de",total))
 
 moviesAndProximityScores = []
 def computeMovieRelations(userAndFavouritesFileName):
     usersAndFavouritesList = readListFile(userAndFavouritesFileName)
+    uafSize = len(usersAndFavouritesList)
     #moviesAndProximityScores = [movie_name,[[movie1,score],[movie2,score],...],movie_name2,[[movie1,score],[movie2,score],...],...]
     global moviesAndProximityScores
     movieAndScores = []
-    threadThread = threading.Thread(target = saveOnIntervall, args = (moviesAndProximityScores,"movieRelations.bin"))
+    threadThread = threading.Thread(target = saveOnIntervall, args = (moviesAndProximityScores,"movieRelations.bin",uafSize))
     threadThread.start()
     #varre todos os usuarios
     for user in usersAndFavouritesList:
@@ -172,6 +135,8 @@ def findClosestMovie(movieRelations,moviesAndNumbers,moviename,exponent):
     for movieScore in othersScores:
         #import pdb; pdb.set_trace()
         #procura peso do filme na lista de numeros
+        if(movieScore[1] == 1):
+            continue
         idAtNum = [m[0] for m in moviesAndNumbers].index(movieScore[0])
         factor = moviesAndNumbers[idAtNum][1]
         score = movieScore[1]/pow(factor,exponent)
