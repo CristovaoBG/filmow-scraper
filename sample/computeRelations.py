@@ -40,34 +40,41 @@ def countFavouritedTimes(usersAndFavouritesFileName):
     return moviesAndNumbers;
 
 def saveOnIntervall(listToSave,filename,total):
+    global timeStart
+    global totalRead
     while(True):
-        time.sleep(200)
+        time.sleep(100)
         saveListFile(listToSave,filename)
-        print("Arquivo",filename,"salvo. Lidos:",len(listToSave,"de",total))
+        print("Arquivo",filename,"salvo. Lidos:",totalRead[0],"de",total,". tamanho:",len(moviesAndProximityScores),"tempo:",int(time.time()-timeStart))
 
+timeStart = time.time()
 moviesAndProximityScores = []
+totalRead = [0]
+#computeMovieRelations("usersFavourites.bin")
 def computeMovieRelations(userAndFavouritesFileName):
+    global moviesAndProximityScores
+    global totalRead
     usersAndFavouritesList = readListFile(userAndFavouritesFileName)
     uafSize = len(usersAndFavouritesList)
     #moviesAndProximityScores = [movie_name,[[movie1,score],[movie2,score],...],movie_name2,[[movie1,score],[movie2,score],...],...]
-    global moviesAndProximityScores
     movieAndScores = []
     threadThread = threading.Thread(target = saveOnIntervall, args = (moviesAndProximityScores,"movieRelations.bin",uafSize))
     threadThread.start()
     #varre todos os usuarios
     for user in usersAndFavouritesList:
+        totalRead[0] += 1;
         # le cada favorito e adiciona a um na pontuacao de cada outro favorito
         for movie in user[1]:   #user[1] eh a lista de favoritos
             #dois casos, ou esse filme ja tem scores ou eh a primeira vez que aparece
             #caso ja exista, copia o existente.
-            newCurrentFavourite = True # True if the movie is not on the list yet
             try:
                 currentFavouriteID = [movieAndScores[0] for movieAndScores in moviesAndProximityScores].index(movie)
                 movieAndScores = moviesAndProximityScores[currentFavouriteID]
-                newCurrentMovie = False;
+                newCurrentFavourite = False;
             #caso seja a primeira vez, cria novo item filmeAndScores
             except ValueError:
                 movieAndScores = [movie,[]] #nessa lista vazia vai um conjunte de itens contendo filme e score
+                newCurrentFavourite = True # True if the movie is not on the list yet
             #varre demais favoridos e adiciona 1 para na sua respectiva pontuacao
             for otherFavourite in user[1]:  #user[1] eh a lista de favoritos
                 if (otherFavourite != movie):
@@ -82,8 +89,8 @@ def computeMovieRelations(userAndFavouritesFileName):
             if(len(movieAndScores[1])>0):
                 if (newCurrentFavourite):
                     moviesAndProximityScores.append(movieAndScores)
-                else:
-                    moviesAndProximityScores[currentFavouriteID] = movieAndScores
+                # else:
+                #     moviesAndProximityScores[currentFavouriteID] = movieAndScores
     saveListFile(moviesAndProximityScores,"movieRelations.bin")
     print("computation of movie relations complete.")
 
@@ -127,7 +134,7 @@ def findClosestMovie(movieRelations,moviesAndNumbers,moviename,exponent):
     getSecond = lambda a:a[1]
     moviesAndNumbers.sort(key=getSecond)
     othersScores = movieRelations[id][1]
-    biggestScore = moviesAndNumbers[-1][1]
+    # biggestScore = moviesAndNumbers[-1][1]
     #import pdb; pdb.set_trace()
     bestId = 0
     i=0
@@ -152,8 +159,14 @@ def findClosestMovie(movieRelations,moviesAndNumbers,moviename,exponent):
     return scoresList;
 
 #DEBUG_START
-mr = readListFile("movieRelations.bin")
-man = readListFile("moviesAndNumbers.bin")
+mr = []
+man = []
+
+def debugSetup():
+    global man
+    global mr
+    mr = readListFile("mr.bin")
+    man = readListFile("moviesAndNumbers.bin")
 
 def pf(list):
     for l in list:
@@ -168,7 +181,7 @@ def pn(movieName):
 #k = findClosestMovie(mr,man,"acordar-para-a-vida-t1414",0.55)
 #k = findClosestMovie(mr,man,"tenacious-d-uma-dupla-infernal-t3598",0.55)
 #k = findClosestMovie(mr,man,"a-mao-assassina-t2070",0.55)
-k = findClosestMovie(mr,man,"superbad-e-hoje-t3581",0.55)
+#k = findClosestMovie(mr,man,"superbad-e-hoje-t3581",0.55)
 import pdb; pdb.set_trace()
 #except:
     #print("FAILED")
