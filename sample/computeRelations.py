@@ -14,8 +14,8 @@ def saveOnIntervall2(listToSave,onUser,filename):
 #conta quantas vezes cada filme foi favoritado
 moviesAndNumbers = []
 onUser = [0]
-def countFavouritedTimes(usersAndFavouritesFileName):
-    usersAndFavouritesList = readListFile(usersAndFavouritesFileName)
+def countFavouritedTimes(usersAndFavouritesList):
+    #usersAndFavouritesList = readListFile(usersAndFavouritesFileName)
     global moviesAndNumbers
     global onUser
     threadThread = threading.Thread(target = saveOnIntervall2, args = (moviesAndNumbers,onUser,"moviesAndNumbers.bin"))
@@ -39,6 +39,7 @@ def countFavouritedTimes(usersAndFavouritesFileName):
     saveListFile(moviesAndNumbers,"moviesAndNumbers.bin")
     return moviesAndNumbers;
 
+
 def saveOnIntervall(listToSave,filename,total):
     global timeStart
     global totalRead
@@ -51,15 +52,17 @@ timeStart = time.time()
 moviesAndProximityScores = []
 totalRead = [0]
 #computeMovieRelations("usersFavourites.bin")
-def computeMovieRelations(userAndFavouritesFileName):
+def computeMovieRelations(usersAndFavouritesList):
     global moviesAndProximityScores
     global totalRead
-    usersAndFavouritesList = readListFile(userAndFavouritesFileName)
+    #usersAndFavouritesList = readListFile(userAndFavouritesFileName)
     uafSize = len(usersAndFavouritesList)
     #moviesAndProximityScores = [movie_name,[[movie1,score],[movie2,score],...],movie_name2,[[movie1,score],[movie2,score],...],...]
     movieAndScores = []
     threadThread = threading.Thread(target = saveOnIntervall, args = (moviesAndProximityScores,"movieRelations.bin",uafSize))
     threadThread.start()
+    moviesAndNumbers = readListFile("moviesAndNumbers.bin")
+    findIdAtNumbers = lambda movieName:[m[0] for m in moviesAndNumbers].index(movieName)
     #varre todos os usuarios
     for user in usersAndFavouritesList:
         totalRead[0] += 1;
@@ -94,29 +97,119 @@ def computeMovieRelations(userAndFavouritesFileName):
     saveListFile(moviesAndProximityScores,"movieRelations.bin")
     print("computation of movie relations complete.")
 
-def findClosestMovieOld(movieRelationsFile,moviename):
-    movieRelations = readListFile(movieRelationsFile)
-    #remove acento de todos os filmes indices para busca funcionar
-    #from unidecode import unidecode
-    #moviename = moviename.encode('latin1').decode('utf8')
-    #moviename = unidecode(moviename)
-    #for i in range(0,len(movieRelations)):
-        #movieRelations[i][0] = unidecode(movieRelations[i][0])
-    #try:
-    id = [movieAndScores[0] for movieAndScores in movieRelations].index(moviename)
-    #print(movieRelations[id])
-    #encontra o maior
-    othersScores = movieRelations[id][1]
-    biggestScore = 0
-    bestId = 0
-    i=0
-    for movieScore in othersScores:
-        if (movieScore[1]>=biggestScore):
-            bestId = i
-            biggestScore = movieScore[1]
-            print("----",biggestScore,"----",othersScores[bestId][0])
-        i += 1
-    print("-->",othersScores[bestId][0])
+def saveFile(fileName,fileData):
+    newFile = open(fileName, "wb")
+    newFile.write(fileData)
+    newFile.close()
+
+def getId(movieNumbers,movieName):
+    return ([m[0] for m in movieNumbers].index(movieName))
+
+def getName(movieNumbers,Id):
+    return (movieNumbers[Id][0])
+
+def readTxtFile(dir):
+    with open(dir, 'r') as file:
+        data = file.read()
+    return data
+
+def reconstructMovieRelations(movieNumbers,movieName):
+    # [tamanho1, id1,n1,id2,n2,...,tamanho2, id1,id2,...]
+    id = getId(movieNumbers,movieName)
+    N=100 ################################# atencao!!
+    fileId = int(id/N)
+    registerPosition = id%N
+    jumps = 0
+    #import pdb; pdb.set_trace()
+    file = readTxtFile("teste3/mr"+str(fileId)+".txt")
+    offset = 0
+    while(jumps != registerPosition):
+        offset+=file[offset]*2 + 1
+        jumps+=1
+    registerSize = file[offset]
+    offset+=1
+    register = file[offset:offset+registerSize*2]
+    #reconstroi
+    cursor = 0
+    while(cursor<len(register)):
+        register[cursor] = getName(movieNumbers,register[cursor])
+        cursor+=2
+    return register
+
+
+def generateFiles(movieNumbers,movieRelations,directory="/data/"):
+    #cada arquivo contem dados de N filmes (N = 10 e 2500 filmes-> 250 arquivos)
+    #arquivo do filme é calculado por: NA = id_do_filme / N ("NA" é numero inteiro)
+    #a posicao no arquivo é calculada por PA = id_do_filme % N
+    #id_do_filme é a posicao do filme no movieNumbers
+    #em cada arquivo, o primeiro byte especifica a quantidade de outros filmes que este tem.
+    #em seguida os filmes seguidos de seu score. segue em sequencia o proximo filme e seus outros filmes,
+    #até que tenham N filmes no arquivo.
+    N=10
+    # totalOfMovies = len(movieNumbers)
+    # for i in range(0,totalOfMovies):
+    fileId = 0
+    movieId = 0
+    totalOfMovies = len(movieNumbers)
+    endOfMovies = False
+    timeStart = time.time();
+    while not endOfMovies:
+        #cria novo arquivo
+        fileBytes = []
+        #le N filmes
+        for i in range(0,N):
+            print("lendo filme: \""+getName(movieNumbers,movieId)+"\".."+" tempo decorrido:",int(time.time()-timeStart))
+            if (movieId >= totalOfMovies):
+                endOfMovies = True
+                break
+            #le 1 filmes e seus otherMovies
+            #pega nome no movieNumbers
+            movieName = getName(movieNumbers,movieId)
+            #pega filme no movieRelations
+            try:
+                mrPos = [m[0] for m in movieRelations].index(movieName)
+                othersScores = movieRelations[mrPos][1]
+            except ValueError:
+                othersScores = []
+            othersScores = movieRelations[mrPos][1]
+            #appenda quantidade de otherMovies
+            fileBytes.append(len(othersScores))
+            #appenda filme id e score de todos os otherMovies
+            for other in othersScores:
+                fileBytes.append(getId(movieNumbers,other[0]))
+                fileBytes.append(other[1])
+            movieId +=1
+        #salva arquivo
+        print("gerando arquivo "+str(fileId)+"..")
+        saveListFile(fileBytes,directory+"movies"+str(fileId)+".bin")
+        fileId+=1
+
+
+#
+#
+# def findClosestMovieOld(movieRelationsFile,moviename):
+#     movieRelations = readListFile(movieRelationsFile)
+#     #remove acento de todos os filmes indices para busca funcionar
+#     #from unidecode import unidecode
+#     #moviename = moviename.encode('latin1').decode('utf8')
+#     #moviename = unidecode(moviename)
+#     #for i in range(0,len(movieRelations)):
+#         #movieRelations[i][0] = unidecode(movieRelations[i][0])
+#     #try:
+#     id = [movieAndScores[0] for movieAndScores in movieRelations].index(moviename)
+#     #print(movieRelations[id])
+#     #encontra o maior
+#     othersScores = movieRelations[id][1]
+#     biggestScore = 0
+#     bestId = 0
+#     i=0
+#     for movieScore in othersScores:
+#         if (movieScore[1]>=biggestScore):
+#             bestId = i
+#             biggestScore = movieScore[1]
+#             print("----",biggestScore,"----",othersScores[bestId][0])
+#         i += 1
+#     print("-->",othersScores[bestId][0])
 
 def findClosestMovie(movieRelations,moviesAndNumbers,moviename,exponent):
 
@@ -175,14 +268,16 @@ def pf(list):
 def pn(movieName):
     print(man[[m[0] for m in man].index(movieName)])
 
-#import pdb; pdb.set_trace()
+#reconstructMovieRelations(readListFile("moviesAndNumbers.bin"),"superbad-e-hoje-t3581")
+
+import pdb; pdb.set_trace()
 #DEBUG_END
 #DEBUG_END
 #k = findClosestMovie(mr,man,"acordar-para-a-vida-t1414",0.55)
 #k = findClosestMovie(mr,man,"tenacious-d-uma-dupla-infernal-t3598",0.55)
 #k = findClosestMovie(mr,man,"a-mao-assassina-t2070",0.55)
 #k = findClosestMovie(mr,man,"superbad-e-hoje-t3581",0.55)
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
 #except:
     #print("FAILED")
 #movieRelations = readListFile("newMovieRelations.bin")
