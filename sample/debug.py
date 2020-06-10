@@ -88,7 +88,27 @@ def debugFiles():
     rec = computeRelations.reconstructMovieRelations(fman,"superbad-e-hoje-t3581")
     import pdb; pdb.set_trace()
 
+def formatMoviesNames():
+    man = readListFile("moviesAndNumbers.bin")
+    nameList = []
+    for m in man:
+        newName = ""
+        # import pdb; pdb.set_trace()
+        for letter in m[0]:
+            newName += letter if letter != '-' else ' '
+        newName = newName.rsplit(' ', 1)[0] #remove ultima palavra
+        nameList.append(newName)
+    #convert nameList para nameString pra salvar txt
+    nameString = ""
+    for name in nameList:
+        nameString+=name+"\n"
+    #salva
+    f=open("movieNames.txt","w+")
+    f.write(nameString)
+    f.close()
+    print(len(nameList))
+
 
 
 # debugFiles()
-import pdb; pdb.set_trace()
+formatMoviesNames();

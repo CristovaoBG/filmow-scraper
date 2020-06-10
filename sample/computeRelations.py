@@ -270,7 +270,7 @@ def pn(movieName):
 
 #reconstructMovieRelations(readListFile("moviesAndNumbers.bin"),"superbad-e-hoje-t3581")
 
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
 #DEBUG_END
 #DEBUG_END
 #k = findClosestMovie(mr,man,"acordar-para-a-vida-t1414",0.55)
