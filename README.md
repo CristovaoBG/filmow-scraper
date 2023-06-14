@@ -9,5 +9,3 @@ Web scraping to retrieve and process fun stuff from the social media "Filmow" us
 
 
 Made by/Feito por: Cristóvão Bartholo Gomes
-
-TESTE
