@@ -1,4 +1,4 @@
-# filmowScraper
+﻿# filmowScraper
 Web scraping pra coletar e processar coisas divertidas da rede social "Filmow" usando Python.
 
 # bibliotecas e versões / libraries and versions
@@ -9,3 +9,5 @@ Web scraping to retrieve and process fun stuff from the social media "Filmow" us
 
 
 Made by/Feito por: Cristóvão Bartholo Gomes
+
+TESTE
