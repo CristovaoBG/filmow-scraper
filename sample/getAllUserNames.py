@@ -6,6 +6,7 @@ import time
 import timeit
 from listUtils import *
 from math import *
+import pandas as pd
 
 urlBase = "https://filmow.com/usuarios/?pagina="
 pagesRead = 0
@@ -39,7 +40,7 @@ def checkIfOver(threadList,usersList,fileName, verbose = True):
 	while (not allDone):
 		allDone = True
 		for t in threadList:
-			if (t.isAlive()):
+			if (t.is_alive()):
 				allDone = False
 				time.sleep(10)
 				saveListFile(usersList,fileName)
@@ -85,6 +86,10 @@ def readUserNames(nameOutput = "users.txt", pagesToRead = 7000, threadAmount = 2
 
 	#stops this thread if hasnt finished everything saveListFile
 	while(isAllDone == False):
-		time.sleep(5)
+		time.sleep(1)
 
 #exec(open("getAllUserNames.py").read())
+if __name__ == "__main__":
+    df = pd.DataFrame([],columns=['userName'])
+	#readUserNames(nameOutput = "usersTest.txt", pagesToRead = 100, threadAmount = 20,verbose = True, veryVerbose = True )
+    #usersTest.txt

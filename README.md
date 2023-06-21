@@ -8,4 +8,5 @@ bs4==0.0.1
 Web scraping to retrieve and process fun stuff from the social media "Filmow" using Python.
 
 
-Made by/Feito por: Cristóvão Bartholo Gomes
+Cristóvão Bartholo Gomes
+cristovao@live.com

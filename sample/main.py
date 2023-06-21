@@ -10,7 +10,7 @@ try:
 except IOError:
     print("Arquivo de usuarios inexistente. Criando arquivo de usuarios..")
     #readUserNames(nameOutput = "../data/users.txt", pagesToRead = 200, threadAmount = 40,verbose = True, veryVerbose = True )
-    readUserNames(nameOutput = "../data/users.txt", pagesToRead = 72600, threadAmount = 20,verbose = True, veryVerbose = True )
+    readUserNames(nameOutput = "../data/users.txt", pagesToRead = 10, threadAmount = 20,verbose = True, veryVerbose = True )
     userList = readListFile(userFile)
 
 print("lendo favoriros dos usuarios...")

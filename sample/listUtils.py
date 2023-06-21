@@ -2,6 +2,7 @@ import string
 import urllib.request
 from bs4 import BeautifulSoup
 import pickle
+import os
 
 def openSoup(httpLink):
 	htmlText = urllib.request.urlopen(httpLink).read()
