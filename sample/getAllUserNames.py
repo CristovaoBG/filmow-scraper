@@ -48,19 +48,28 @@ def checkIfOver(threadList,usersList,fileName, verbose = True):
 				break
 	print("total de paginas lidas:",floor(len(usersList)/30))
 	print("salvando lista de usuarios...")
-	saveListFile(usersList,fileName)
+    #saveListFile(usersList,fileName)
+	updateUserList(usersList)
 	print("lista de usuarios salva com sucesso.")
 	isAllDone = True
 
+def updateUserList(usersList, fileName):
+    dfNew = pd.DataFrame({'User':usersList})
+    #try to read from file
+    try:
+        df = pd.read_csv(fileName)
+        df = df.append(dfNew)
+        df = df.drop_duplicates()
+    except FileNotFoundError:
+        df = dfNew
+        
+    df.to_csv(fileName, index = False)
+    return df
+
 def readUserNames(nameOutput = "users.txt", pagesToRead = 7000, threadAmount = 200,verbose=False, veryVerbose = False):
-	#def readUserNames(threadAmount,pagesToRead):
-	#threadAmount = 200
-	#pagesToRead = 70000
 	print("lendo lista de usuarios, aguarde...")
 	userList = []
 	global globalDoneReadingUserNames
-	#	threadAmount = 100
-	#	pagesToRead = 200#70000
 	# go through the pages with users in it
 	usersList = []
 
@@ -72,7 +81,7 @@ def readUserNames(nameOutput = "users.txt", pagesToRead = 7000, threadAmount = 2
 	threadList = []
 	while(pageStart <= pagesToRead):
 		if(verbose):
-			print("from "+str(pageStart)+" to "+str(pageEnd))
+			print("from "+str(pageStart)+" to "+ str(pageEnd))
 		newThread = threading.Thread(target = readUserPages, args = (pageStart,pageEnd,usersList,veryVerbose))
 		newThread.start()
 		threadList.append(newThread)
@@ -90,6 +99,7 @@ def readUserNames(nameOutput = "users.txt", pagesToRead = 7000, threadAmount = 2
 
 #exec(open("getAllUserNames.py").read())
 if __name__ == "__main__":
-    df = pd.DataFrame([],columns=['userName'])
-	#readUserNames(nameOutput = "usersTest.txt", pagesToRead = 100, threadAmount = 20,verbose = True, veryVerbose = True )
+    #df = updateUserList(['a','b','c'],"output.csv")
+	readUserNames(nameOutput = "usersTest.txt", pagesToRead = 100, threadAmount = 20,verbose = True, veryVerbose = True )
+    
     #usersTest.txt
