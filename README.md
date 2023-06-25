@@ -1,12 +1,9 @@
 ﻿# filmowScraper
-Web scraping pra coletar e processar coisas divertidas da rede social "Filmow" usando Python.
+Web scraping to retrieve and process fun stuff from the social media platform "Filmow" using Python.
 
-# bibliotecas e versões / libraries and versions
+# Dependencies
 beautifulsoup4==4.9.1
 bs4==0.0.1
-
-Web scraping to retrieve and process fun stuff from the social media "Filmow" using Python.
-
 
 Cristóvão Bartholo Gomes
 cristovao@live.com
