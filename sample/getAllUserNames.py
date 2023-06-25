@@ -58,7 +58,7 @@ def updateUserList(usersList, fileName):
     #try to read from file
     try:
         df = pd.read_csv(fileName)
-        df = df.append(dfNew)
+        df = pd.concat([df,dfNew],ignore_index=True)
         df = df.drop_duplicates()
     except FileNotFoundError:
         df = dfNew
