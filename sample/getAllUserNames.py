@@ -49,7 +49,7 @@ def checkIfOver(threadList,usersList,fileName, verbose = True):
 	print("total de paginas lidas:",floor(len(usersList)/30))
 	print("salvando lista de usuarios...")
     #saveListFile(usersList,fileName)
-	updateUserList(usersList)
+	updateUserList(usersList, fileName)
 	print("lista de usuarios salva com sucesso.")
 	isAllDone = True
 
