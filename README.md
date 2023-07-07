@@ -1,20 +1,20 @@
 ﻿# Web Scraping Filmow
- 
-Filmow is an online platform aimed at film and series enthusiasts. It offers a space for users to create profiles where they can list and rate the movies and series they have watched, as well as share their opinions and recommendations with the community. The platform allows users to create personalized lists such as "Favorites" and "Watch Later," making content management easier. Additionally, Filmow provides detailed information about each title, including a synopsis, cast, production team, user ratings, and trailers. With its social approach, Filmow allows users to discover new films and series based on recommendations from friends and community members. In summary, Filmow is a platform dedicated to connecting people who share a love for cinema and television, providing an interactive and informative experience.
 
-This project aims to extract data from this platform, such as user names, their favorites, movie titles, etc. From the extracted data, it is possible to perform data analysis to estimate a user's cinematic taste profile, allowing for the discovery of users with similar tastes and even correlating the favorited movies of users to recommend new films based on their profiles. The project at https://github.com/CristovaoBG/CristovaoBG.github.io implements a movie recommendation website https://CristovaoBG.github.io based on the data extracted from users of this platform.
+Filmow é uma plataforma online voltada para amantes de filmes e séries. Ela oferece um espaço para os usuários criarem perfis, onde podem listar e avaliar os filmes e séries que assistiram, além de compartilhar suas opiniões e recomendações com a comunidade. A plataforma permite que os usuários criem listas personalizadas, como "Favoritos" e "Assistir mais tarde", facilitando o gerenciamento do conteúdo. Além disso, o Filmow fornece informações detalhadas sobre cada título, como sinopse, elenco, equipe de produção, avaliações de outros usuários e trailers. Com sua abordagem social, o Filmow permite que os usuários descubram novos filmes e séries com base nas recomendações de amigos e membros da comunidade. Em resumo, o Filmow é uma plataforma dedicada a conectar pessoas que compartilham o amor pelo cinema e pela televisão, proporcionando uma experiência interativa e informativa.
+
+Este projeto visa extrair dados dessa plataforma, como nome dos usuários, seus favoritos, nome dos filmes, etc. A partir dos dados extraídos, é possível realizar análises de dados para estimar o perfil de gosto cinematográfico de um usuário, permitindo descobrir usuários com gostos similares e até mesmo correlacionar os filmes favoritados dos usuários para recomendar novos filmes com base em seus perfis. O projeto em https://github.com/CristovaoBG/CristovaoBG.github.io implementa um site de recomendação de filmes em https://CristovaoBG.github.io baseado nos dados extraídos dos usuários dessa plataforma.
 
 # Links
 
 - Filmow: https://filmow.com/
-- Filmow scraping repository: https://github.com/CristovaoBG/filmow-scraper
-- Movie recomendation site: https://CristovaoBG.github.io
+- Repositório de web scraping do Filmow: https://github.com/CristovaoBG/filmow-scraper
+- Site de recomendação de filmes: https://CristovaoBG.github.io
 
 # TODO
-- Use pandas for data analisys and visualization
-- Use numpy for faster data processing
+- Usar o pandas para análise e visualização de dados
+- Usar o numpy para processamento de dados mais rápido
 
-# Dependencies
+# Dependências
 beautifulsoup4==4.9.1
 bs4==0.0.1
 
