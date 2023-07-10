@@ -1,11 +1,9 @@
-import string
 import urllib.request
 from bs4 import BeautifulSoup
 import threading
 import time
-import timeit
-from listUtils import *
-from math import *
+import listUtils
+from math import math
 import pandas as pd
 
 urlBase = "https://filmow.com/usuarios/?pagina="
@@ -37,18 +35,19 @@ def readUserPages(pageStart,pageEnd, userList, verbose = False):
 def checkIfOver(threadList,usersList,fileName, verbose = True):
 	global isAllDone
 	allDone = False
+	# autosave
 	while (not allDone):
 		allDone = True
 		for t in threadList:
 			if (t.is_alive()):
 				allDone = False
 				time.sleep(10)
-				saveListFile(usersList,fileName)
+				listUtils.saveListFile(usersList,f"partial_{fileName}")
 				print(floor(len(usersList)/30), "paginas lidas.")
 				break
-	print("total de paginas lidas:",floor(len(usersList)/30))
+	print("Threads finalizadas. Total de paginas lidas:",floor(len(usersList)/30))
 	print("salvando lista de usuarios...")
-    #saveListFile(usersList,fileName)
+	
 	updateUserList(usersList, fileName)
 	print("lista de usuarios salva com sucesso.")
 	isAllDone = True
