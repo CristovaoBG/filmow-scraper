@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import threading
 import time
 import listUtils
-from math import math
+from math import floor
 import pandas as pd
 
 urlBase = "https://filmow.com/usuarios/?pagina="
