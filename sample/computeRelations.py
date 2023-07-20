@@ -61,7 +61,7 @@ def computeMovieRelations(usersAndFavouritesList):
     movieAndScores = []
     threadThread = threading.Thread(target = saveOnIntervall, args = (moviesAndProximityScores,"movieRelations.bin",uafSize))
     threadThread.start()
-    moviesAndNumbers = readListFile("moviesAndNumbers.bin")
+    moviesAndNumbers = read_list_file("moviesAndNumbers.bin")
     findIdAtNumbers = lambda movieName:[m[0] for m in moviesAndNumbers].index(movieName)
     #varre todos os usuarios
     for user in usersAndFavouritesList:
@@ -258,8 +258,8 @@ man = []
 def debugSetup():
     global man
     global mr
-    mr = readListFile("mr.bin")
-    man = readListFile("moviesAndNumbers.bin")
+    mr = read_list_file("mr.bin")
+    man = read_list_file("moviesAndNumbers.bin")
 
 def pf(list):
     for l in list:

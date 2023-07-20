@@ -96,6 +96,6 @@ def read_user_names(name_output = "users.txt", pages_to_read = 7000, thread_amou
 #exec(open("getAllUserNames.py").read())
 if __name__ == "__main__":
     #df = updateUserList(['a','b','c'],"output.csv")
-	read_user_names(name_output = "usersTest.txt", pages_to_read = 10000, thread_amount = 20,verbose = True, very_verbose = True )
+	read_user_names(name_output = "usersTest.txt", pages_to_read = 10000, thread_amount = 20,verbose = True, very_verbose = True ) 
     
     #usersTest.txt

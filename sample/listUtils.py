@@ -9,7 +9,7 @@ def openSoup(httpLink):
 	soup = BeautifulSoup(htmlText, 'html.parser')
 	return soup
 
-def readListFile(fileName):
+def read_list_file(fileName):
 	with open(fileName,"rb") as fp:
 		listReturn = pickle.load(fp)
 	return listReturn

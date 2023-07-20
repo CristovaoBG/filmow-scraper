@@ -1,13 +1,14 @@
 
-	#compare with current user
-usersAndIntersection = []
+
+#compare with current user
+users_and_intersections= []
 print("\n\ncalculating intersection between users...\n\n")
 listOfUsersAndFavouritesIntersection = []
-for unf in usersFavouritesList:
+for unf in users_favorites_list:
 	#converte para conjunto, faz intersecao e calcula comprimento
 #	print(unf[1])
 	sUnf = set(unf[1])
-	sUser = set(userFavourites)
+	sUser = set(user_favorites)
 	favouritesIntersection = sUnf & sUser
 	userAndIntersection = []
 	userAndIntersection.append(unf[0])	#name
@@ -25,7 +26,7 @@ for uafi in listOfUsersAndFavouritesIntersection:
 		continue
 	if (uafi[2] == 0):
 		continue	#if the current user has zero favourites, continues
-	coeficient = uafi[2]/userFavouritesLength	# the bigger this coeficient, the lower this person's "score" is.
+	coeficient = uafi[2]/users_favorites_length	# the bigger this coeficient, the lower this person's "score" is.
 	if (coeficient <= 1):
 		coeficient = 1	#div by zero correction (and else)
 	score = len(uafi[1])/coeficient

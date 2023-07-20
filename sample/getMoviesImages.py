@@ -52,7 +52,7 @@ def getMoviesImagesRange(startId,endId,moviesAndNumbers):
         getMovieImage(i, moviesAndNumbers)
 
 def getAllMoviesImages(threadAmount = 200):
-    moviesAndNumbers = readListFile("moviesAndNumbers.bin")
+    moviesAndNumbers = read_list_file("moviesAndNumbers.bin")
     manLen = len(moviesAndNumbers)
     chopNumber = int(manLen/threadAmount)
     startId = 0

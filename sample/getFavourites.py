@@ -6,105 +6,101 @@ import time
 import timeit
 from listUtils import *
 
-stopAllThreads = False
-userCount = 0
+stop_all_threads = False
+user_count = 0
 def stop():
-	stopAllThreads = True
+	stop_all_threads = True
 
-def getFavourites(userString):
-	movieNameList = []
-	urlUser = "https://filmow.com"+"/usuario/" + userString + "/"
-	pageID = 1
+def get_favorites(user_string):
+	movie_name_list = []
+	url_user = "https://filmow.com"+"/usuario/" + user_string + "/"
+	page_id = 1
 	while(True):
 		try:
-			userFavouritesSoup = openSoup(urlUser+"filmes/favoritos/?pagina="+str(pageID))
+			user_favorites_soup = openSoup(url_user+"filmes/favoritos/?pagina="+str(page_id))
 		except:
 			break
-		allMovies = userFavouritesSoup.find_all("li",class_="movie_list_item")
+		all_movies = user_favorites_soup.find_all("li",class_="movie_list_item")
 		#print("reading: "+ urlUser+"filmes/favoritos/?pagina="+str(pageID))
-		for movie in allMovies:
-			movieName = movie.find("a")['href'][1:-1] #[1:-1] pra eliminar os "/"
-			movieNameList.append(movieName)
-		pageID+=1
-	return movieNameList
+		for movie in all_movies:
+			movie_name = movie.find("a")['href'][1:-1] #[1:-1] pra eliminar os "/"
+			movie_name_list.append(movie_name)
+		page_id+=1
+	return movie_name_list
 
-def getUserWatched(userString):
-	movieNameList = []
-	urlUser = "https://filmow.com"+userString
-	pageID = 1
+def get_user_watched(user_string):
+	movie_name_list = []
+	url_user = "https://filmow.com" + user_string
+	page_id = 1
 	#https://filmow.com/usuario/dj_crissi/filmes/ja-vi/?pagina=
 	while(True):
 		try:
-			userFavouritesSoup = openSoup(urlUser+"filmes/ja-vi/?pagina="+str(pageID))
+			user_favorites_soup = openSoup(url_user+"filmes/ja-vi/?pagina="+str(page_id))
 		except:
 			break
-		allMovies = userFavouritesSoup.find_all("li",class_="movie_list_item")
-		print("reading: "+ urlUser+"filmes/ja-vi/?pagina="+str(pageID))
-		for movie in allMovies:
-			movieName = movie.find("a")['title']
-			movieNameList.append(movieName)
-		pageID+=1
-	return movieNameList
+		all_movies = user_favorites_soup.find_all("li", class_="movie_list_item")
+		print(f"reading: {url_user}filmes/ja-vi/?pagina={page_id}")
+		for movie in all_movies:
+			movie_name = movie.find("a")['title']
+			movie_name_list.append(movie_name)
+		page_id+=1
+	return movie_name_list
 
-def getUserDontWantToSee(userString):
-	movieNameList = []
-	urlUser = "https://filmow.com"+userString
-	pageID = 1
+def get_user_dont_want_to_see(user_string):
+	movie_name_list = []
+	url_user = "https://filmow.com"+user_string
+	page_id = 1
 	#https://filmow.com/usuario/dj_crissi/filmes/ja-vi/?pagina=
 	while(True):
 		try:
-			userFavouritesSoup = openSoup(urlUser+"filmes/ja-vi/?pagina="+str(pageID))
+			user_unfavorites_soup = openSoup(url_user+"filmes/ja-vi/?pagina="+str(page_id))
 		except:
 			break
-		allMovies = userFavouritesSoup.find_all("li",class_="movie_list_item")
-		print("reading: "+ urlUser+"filmes/nao-quero-ver/?pagina="+str(pageID))
-		for movie in allMovies:
-			movieName = movie.find("a")['title']
-			movieNameList.append(movieName)
-		pageID+=1
-	return movieNameList
+		all_movies = user_unfavorites_soup.find_all("li",class_="movie_list_item")
+		print("reading: "+ url_user+"filmes/nao-quero-ver/?pagina="+str(page_id))
+		for movie in all_movies:
+			movie_name = movie.find("a")['title']
+			movie_name_list.append(movie_name)
+		page_id+=1
+	return movie_name_list
 
-def threadTest(threadNum):
-	print("thread number "+ str(threadNum) + " started.")
+def thread_test(thread_num):
+	print("thread number "+ str(thread_num) + " started.")
 	time.sleep(2)
-	print("thread number "+ str(threadNum) + " finished.")
+	print("thread number "+ str(thread_num) + " finished.")
 
 
-def getAllUsersFavouritesThread(userList,usersFavouritesList):
+def get_all_users_favorites_thread(user_list,users_favorites_list):
 	i=0
-	global stopAllThreads
-	global userCount
-	for u in userList:
+	global stop_all_threads
+	global user_count
+	for u in user_list:
 		#print("reading user "+ u +"   user number: "+str(i))
-		currentUserFavourite = getFavourites(u)
+		currentUserFavourite = get_favorites(u)
 		userAndFavourites = []
 		# userAndFavourites.append(u)
 		# userAndFavourites.append(currentUserFavourite)
 		# usersFavouritesList.append(userAndFavourites)
 		if(len(currentUserFavourite)>0):
-			usersFavouritesList.append([u,currentUserFavourite])
+			users_favorites_list.append([u,currentUserFavourite])
 		#print("DONE user "+ u +"   user number: "+str(i))
-		userCount+=1
+		user_count+=1
 		i+=1
-		if (stopAllThreads):
+		if stop_all_threads:
 			break
 
-def waitAndSave(usersFavouritesList,outputFile):
-	global stopAllThreads
-	while (stopAllThreads == False):
+def wait_and_save(users_favorites_list, output_file):
+	global stop_all_threads
+	while (stop_all_threads == False):
 		time.sleep(60)
-		print("arquivoSalvo!")
-		save_list_file(usersFavouritesList,outputFile)
+		print("arquivo salvo!")
+		save_list_file(users_favorites_list, output_file)
 
-"""
-usersRead = []
-for u in usersFavouritesList
-	usersRead.append(u[0])
-"""
 
-def getAllUsersFavourites(userList, threadAmount=200, outputFile = "usersFavourites",NumberOfUsersToRead=1000):
-	global stopAllThreads
-	global userCount
+
+def get_all_users_favorites(user_list, thread_amount=200, output_file = "usersFavourites",number_of_users_to_read=1000):
+	global stop_all_threads
+	global user_count
 	startTime = timeit.default_timer()
 	#entra no usuario e le os favoritos
 	"""
@@ -115,54 +111,54 @@ def getAllUsersFavourites(userList, threadAmount=200, outputFile = "usersFavouri
 	"""
 	#abre arquivo de ja lidos e subtrai eles do userList
 	try:
-		usersFavouritesList = readListFile(outputFile)
+		users_favorites_list = read_list_file(output_file)
 	except IOError:
-		save_list_file([],outputFile)
-		usersFavouritesList = []
+		save_list_file([],output_file)
+		users_favorites_list = []
 
-	usersRead = []
-	for u in usersFavouritesList:
-		usersRead.append(u[0])
+	users_read = []
+	for u in users_favorites_list:
+		users_read.append(u[0])
 
-	userList = list(set(userList) - set(usersRead))
+	user_list = list(set(user_list) - set(users_read))
 
 
 	#limit = 1000
-	firstUserIdToRead = 0
-	lastUserIdToRead = NumberOfUsersToRead
+	first_user_id_to_read = 0
+	last_user_id_to_read = number_of_users_to_read
 
 
 	# chops list for the threads
-	chopNumber = int((lastUserIdToRead - firstUserIdToRead) / threadAmount)
-	startIndex = firstUserIdToRead
-	endIndex = firstUserIdToRead + chopNumber
+	chop_number = int((last_user_id_to_read - first_user_id_to_read) / thread_amount)
+	start_index = first_user_id_to_read
+	end_index = first_user_id_to_read + chop_number
 	l=[]
 	#usersFavouritesList = []
-	threadList = []
+	thread_list = []
 
-	while(endIndex < lastUserIdToRead):
+	while(end_index < last_user_id_to_read):
 		#print("from "+str(startIndex)+" to "+str(endIndex))
-		userChoppedList = userList[startIndex:endIndex]
-		threadThread = threading.Thread(target = getAllUsersFavouritesThread, args = (userChoppedList,usersFavouritesList))
-		threadThread.start()
-		for k in userChoppedList:
+		user_chopped_list = user_list[start_index:end_index]
+		thread_ = threading.Thread(target = get_all_users_favorites_thread, args = (user_chopped_list,users_favorites_list))
+		thread_.start()
+		for k in user_chopped_list:
 			l.append(k)
-		threadList.append(threadThread)
-		startIndex+=chopNumber
-		endIndex+=chopNumber
+		thread_list.append(thread_)
+		start_index+=chop_number
+		end_index+=chop_number
 
 	#thread for saving file
-	threadThread = threading.Thread(target = waitAndSave, args = (usersFavouritesList,outputFile,))
-	threadThread.start()
+	thread_ = threading.Thread(target = wait_and_save, args = (users_favorites_list,output_file,))
+	thread_.start()
 
-	allDone = False
-	while(not allDone):
-		allDone = True
-		for t in threadList:
+	all_done = False
+	while(not all_done):
+		all_done = True
+		for t in thread_list:
 			if (t.isAlive()):
-				allDone = False
+				all_done = False
 				time.sleep(5)
-				print("usuarios lidos:",userCount)
+				print("usuarios lidos:",user_count)
 				break
-	stopAllThreads = True	#pra parar a thread de salvar, somente
+	stop_all_threads = True	#pra parar a thread de salvar, somente
 	print("!!!!!!!!!!!!!!!Finalizado!!!!!!!!!!!!!!!!")
