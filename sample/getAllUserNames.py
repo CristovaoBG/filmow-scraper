@@ -6,99 +6,96 @@ import listUtils
 from math import floor
 import pandas as pd
 
-urlBase = "https://filmow.com/usuarios/?pagina="
-pagesRead = 0
-isAllDone = False
+url_base = "https://filmow.com/usuarios/?pagina="
+pages_read = 0
+is_all_done = False
 
-def openSoup(httpLink):
-	htmlText = urllib.request.urlopen(httpLink).read()
-	soup = BeautifulSoup(htmlText, 'html.parser')
+def open_soup(http_link):
+	html_text = urllib.request.urlopen(http_link).read()
+	soup = BeautifulSoup(html_text, 'html.parser')
 	return soup
 
-def readUserPages(pageStart,pageEnd, userList, verbose = False):
-	global urlBase
-	global pagesRead
-	for i in range(pageStart,pageEnd):
+def read_user_pages(page_start,page_end, user_list, verbose = False):
+	global url_base
+	global pages_read
+	for i in range(page_start,page_end):
 		#print("lendo pagina",str(i))
-		global pagesRead
-		url = urlBase + str(i)
+		global pages_read
+		url = url_base + str(i)
 		try:
-			soup = openSoup(url)
+			soup = open_soup(url)
 		except:
 			continue
-		peopleList = soup.find_all("li",class_="people-list-item")
-		for person in peopleList:
+		people_list = soup.find_all("li",class_="people-list-item")
+		for person in people_list:
 			#ignora /usuario/ e / do inicio e do final, respectivamente
-			userList.append(person.find("a")['href'][9:-1])
-		pagesRead += 1
+			user_list.append(person.find("a")['href'][9:-1])
+		pages_read += 1
 
-def checkIfOver(threadList,usersList,fileName, verbose = True):
-	global isAllDone
-	allDone = False
+def check_if_over(thread_list,users_list,filename, verbose = True):
+	global is_all_done
+	all_done = False
 	# autosave
-	while (not allDone):
-		allDone = True
-		for t in threadList:
+	while (not all_done):
+		all_done = True
+		for t in thread_list:
 			if (t.is_alive()):
-				allDone = False
+				all_done = False
 				time.sleep(10)
-				listUtils.saveListFile(usersList,f"partial_{fileName}")
-				print(floor(len(usersList)/30), "paginas lidas.")
+				listUtils.save_list_file(users_list,f"partial_{filename}")
+				print(floor(len(users_list)/30), "paginas lidas.")
 				break
-	print("Threads finalizadas. Total de paginas lidas:",floor(len(usersList)/30))
+	print("Threads finalizadas. Total de paginas lidas:",floor(len(users_list)/30))
 	print("salvando lista de usuarios...")
 	
-	updateUserList(usersList, fileName)
+	udpate_user_list(users_list, filename)
 	print("lista de usuarios salva com sucesso.")
-	isAllDone = True
+	is_all_done = True
 
-def updateUserList(usersList, fileName):
-    dfNew = pd.DataFrame({'User':usersList})
+def udpate_user_list(user_list, filename):
+    df_new = pd.DataFrame({'User':user_list})
     #try to read from file
     try:
-        df = pd.read_csv(fileName)
-        df = pd.concat([df,dfNew],ignore_index=True)
+        df = pd.read_csv(filename)
+        df = pd.concat([df,df_new],ignore_index=True)
         df = df.drop_duplicates()
     except FileNotFoundError:
-        df = dfNew
+        df = df_new
         
-    df.to_csv(fileName, index = False)
+    df.to_csv(filename, index = False)
     return df
 
-def readUserNames(nameOutput = "users.txt", pagesToRead = 7000, threadAmount = 200,verbose=False, veryVerbose = False):
+def read_user_names(name_output = "users.txt", pages_to_read = 7000, thread_amount = 200,verbose=False, very_verbose = False): #TODO: usar niveis de log?
 	print("lendo lista de usuarios, aguarde...")
-	userList = []
-	global globalDoneReadingUserNames
 	# go through the pages with users in it
-	usersList = []
+	users_list = []
 
-	chopNumber = int(pagesToRead/threadAmount)
+	chop_number = int(pages_to_read/thread_amount)
 
-	pageStart = 1
-	pageEnd = chopNumber
-	pagesRead = 0
-	threadList = []
-	while(pageStart <= pagesToRead):
+	page_start = 1
+	page_end = chop_number
+	thread_list = []
+	while(page_start <= pages_to_read):
 		if(verbose):
-			print("from "+str(pageStart)+" to "+ str(pageEnd))
-		newThread = threading.Thread(target = readUserPages, args = (pageStart,pageEnd,usersList,veryVerbose))
-		newThread.start()
-		threadList.append(newThread)
-		pageStart+=chopNumber
-		pageEnd+=chopNumber
+			print("from "+str(page_start)+" to "+ str(page_end))
+		new_thread = threading.Thread(target = read_user_pages, args = (page_start,page_end,users_list,very_verbose))
+		new_thread.start()
+		thread_list.append(new_thread)
+		page_start+=chop_number
+		page_end+=chop_number
 	#does last threads
 
 	#thread that checks if other threads are done
-	threadThreadChecker = threading.Thread(target = checkIfOver, args = (threadList,usersList,nameOutput, verbose))
-	threadThreadChecker.start()
+	thread_threadchecker = threading.Thread(target = check_if_over, args = (thread_list,users_list,name_output, verbose))
+	thread_threadchecker.start()
 
 	#stops this thread if hasnt finished everything saveListFile
-	while(isAllDone == False):
+	while(is_all_done == False):
 		time.sleep(1)
 
 #exec(open("getAllUserNames.py").read())
 if __name__ == "__main__":
     #df = updateUserList(['a','b','c'],"output.csv")
-	readUserNames(nameOutput = "usersTest.txt", pagesToRead = 100, threadAmount = 20,verbose = True, veryVerbose = True )
+	read_user_names(name_output = "usersTest.txt", pages_to_read = 10000, thread_amount = 20,verbose = True, very_verbose = True )
     
     #usersTest.txt

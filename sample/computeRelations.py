@@ -8,7 +8,7 @@ import time
 def saveOnIntervall2(listToSave,onUser,filename):
     while(True):
         time.sleep(60)
-        saveListFile(listToSave,filename)
+        save_list_file(listToSave,filename)
         print("Arquivo",filename,"salvo. Tamanho:",len(listToSave)," no usuario:",onUser[0])
 #APAGAR!!!!!!!!!!!!!!!!!!!!
 #conta quantas vezes cada filme foi favoritado
@@ -36,7 +36,7 @@ def countFavouritedTimes(usersAndFavouritesList):
             except:
                 #insere na lista
                 moviesAndNumbers.append([fav,1])
-    saveListFile(moviesAndNumbers,"moviesAndNumbers.bin")
+    save_list_file(moviesAndNumbers,"moviesAndNumbers.bin")
     return moviesAndNumbers;
 
 
@@ -45,7 +45,7 @@ def saveOnIntervall(listToSave,filename,total):
     global totalRead
     while(True):
         time.sleep(100)
-        saveListFile(listToSave,filename)
+        save_list_file(listToSave,filename)
         print("Arquivo",filename,"salvo. Lidos:",totalRead[0],"de",total,". tamanho:",len(moviesAndProximityScores),"tempo:",int(time.time()-timeStart))
 
 timeStart = time.time()
@@ -94,7 +94,7 @@ def computeMovieRelations(usersAndFavouritesList):
                     moviesAndProximityScores.append(movieAndScores)
                 # else:
                 #     moviesAndProximityScores[currentFavouriteID] = movieAndScores
-    saveListFile(moviesAndProximityScores,"movieRelations.bin")
+    save_list_file(moviesAndProximityScores,"movieRelations.bin")
     print("computation of movie relations complete.")
 
 def saveFile(fileName,fileData):
@@ -181,7 +181,7 @@ def generateFiles(movieNumbers,movieRelations,directory="/data/"):
             movieId +=1
         #salva arquivo
         print("gerando arquivo "+str(fileId)+"..")
-        saveListFile(fileBytes,directory+"movies"+str(fileId)+".bin")
+        save_list_file(fileBytes,directory+"movies"+str(fileId)+".bin")
         fileId+=1
 
 

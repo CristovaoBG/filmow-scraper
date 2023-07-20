@@ -100,7 +100,7 @@ def removeEmptys(dirAmount = 100, directoryBase = "packed/"):
                 emptys.append(i)
                 os.remove(fileDir)
                 #remove file
-    saveListFile(emptys,"emptys.bin")
+    save_list_file(emptys,"emptys.bin")
 
 # moveImagesToDir()
 removeEmptys()

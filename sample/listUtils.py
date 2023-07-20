@@ -14,7 +14,7 @@ def readListFile(fileName):
 		listReturn = pickle.load(fp)
 	return listReturn
 
-def saveListFile(listInput, fileName):
+def save_list_file(listInput, fileName):
 	with open(fileName,"wb") as fp:
 		pickle.dump(listInput,fp)
         

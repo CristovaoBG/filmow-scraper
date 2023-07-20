@@ -94,7 +94,7 @@ def waitAndSave(usersFavouritesList,outputFile):
 	while (stopAllThreads == False):
 		time.sleep(60)
 		print("arquivoSalvo!")
-		saveListFile(usersFavouritesList,outputFile)
+		save_list_file(usersFavouritesList,outputFile)
 
 """
 usersRead = []
@@ -117,7 +117,7 @@ def getAllUsersFavourites(userList, threadAmount=200, outputFile = "usersFavouri
 	try:
 		usersFavouritesList = readListFile(outputFile)
 	except IOError:
-		saveListFile([],outputFile)
+		save_list_file([],outputFile)
 		usersFavouritesList = []
 
 	usersRead = []
