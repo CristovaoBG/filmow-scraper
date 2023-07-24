@@ -5,6 +5,7 @@ import time
 import listUtils
 from math import floor
 import pandas as pd
+import os
 
 url_base = "https://filmow.com/usuarios/?pagina="
 pages_read = 0
@@ -42,7 +43,10 @@ def check_if_over(thread_list,users_list,filename, verbose = True):
 			if (t.is_alive()):
 				all_done = False
 				time.sleep(10)
-				listUtils.save_list_file(users_list,f"partial_{filename}")
+				file_name_only = os.path.basename(filename)
+				path = os.path.dirname(filename)
+				full_path = os.path.join(path,f"partial_{file_name_only}")
+				listUtils.save_list_file(users_list,full_path)
 				print(floor(len(users_list)/30), "paginas lidas.")
 				break
 	print("Threads finalizadas. Total de paginas lidas:",floor(len(users_list)/30))

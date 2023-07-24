@@ -155,7 +155,7 @@ def get_all_users_favorites(user_list, thread_amount=200, output_file = "usersFa
 	while(not all_done):
 		all_done = True
 		for t in thread_list:
-			if (t.isAlive()):
+			if (t.is_alive()):
 				all_done = False
 				time.sleep(5)
 				print("usuarios lidos:",user_count)
