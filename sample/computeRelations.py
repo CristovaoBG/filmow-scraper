@@ -184,33 +184,6 @@ def generateFiles(movieNumbers,movieRelations,directory="/data/"):
         save_list_file(fileBytes,directory+"movies"+str(fileId)+".bin")
         fileId+=1
 
-
-#
-#
-# def findClosestMovieOld(movieRelationsFile,moviename):
-#     movieRelations = readListFile(movieRelationsFile)
-#     #remove acento de todos os filmes indices para busca funcionar
-#     #from unidecode import unidecode
-#     #moviename = moviename.encode('latin1').decode('utf8')
-#     #moviename = unidecode(moviename)
-#     #for i in range(0,len(movieRelations)):
-#         #movieRelations[i][0] = unidecode(movieRelations[i][0])
-#     #try:
-#     id = [movieAndScores[0] for movieAndScores in movieRelations].index(moviename)
-#     #print(movieRelations[id])
-#     #encontra o maior
-#     othersScores = movieRelations[id][1]
-#     biggestScore = 0
-#     bestId = 0
-#     i=0
-#     for movieScore in othersScores:
-#         if (movieScore[1]>=biggestScore):
-#             bestId = i
-#             biggestScore = movieScore[1]
-#             print("----",biggestScore,"----",othersScores[bestId][0])
-#         i += 1
-#     print("-->",othersScores[bestId][0])
-
 def findClosestMovie(movieRelations,moviesAndNumbers,moviename,exponent):
 
     #remove acento de todos os filmes indices para busca funcionar
@@ -240,10 +213,6 @@ def findClosestMovie(movieRelations,moviesAndNumbers,moviename,exponent):
         idAtNum = [m[0] for m in moviesAndNumbers].index(movieScore[0])
         factor = moviesAndNumbers[idAtNum][1]
         score = movieScore[1]/pow(factor,exponent)
-        # if (score>=biggestScore):
-        #     bestId = i
-        #     biggestScore = score
-        #     print("----",biggestScore,"----",othersScores[bestId][0])
         scoresList.append([movieScore[0],score])
         i += 1
 
